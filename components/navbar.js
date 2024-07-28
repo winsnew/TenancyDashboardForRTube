@@ -29,7 +29,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.post('/api/central/logout')
+      const response = await axios.post('/api/logout')
       if(response.status === 200) {
         router.push('login')
       }
