@@ -4,6 +4,7 @@ import {
   Avatar,
   Button,
   TextField,
+  InputLabel,
   FormControlLabel,
   Checkbox,
   Grid,
@@ -62,6 +63,7 @@ const Login = () => {
           <TextField
             variant="outlined"
             margin="normal"
+            label="Email"
             type="email"
             required
             fullWidth
@@ -73,6 +75,7 @@ const Login = () => {
           <TextField
             variant="outlined"
             margin="normal"
+            label="Password"
             required
             fullWidth
             type="password"

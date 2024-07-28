@@ -13,7 +13,7 @@ const Main = ({children}) => {
             <main className="content">
                 <Navbar setIsSidebar={setIsSidebar}/>
                 {children}
-                <Footer/>
+                {/* <Footer/> */}
             </main>
         </div>
     )

@@ -11,8 +11,6 @@ function App({ Component, pageProps }) {
   const [theme, colorMode] = useMode();
   const router = useRouter();
 
-  
-
   const getLayout = () => {
     if (router.pathname === '/login') {
       return <LoginLayout><Component {...pageProps}/></LoginLayout>;
