@@ -1,16 +1,22 @@
-import { Box, Typography, TextField, Button, Modal } from '@mui/material';
+import { Box, Typography, TextField, Button, Modal } from "@mui/material";
 
-const AddTenantModal = ({ open, handleClose, newData, handleChange, handleAdd }) => {
+const AddTenantModal = ({
+  open,
+  handleClose,
+  newData,
+  handleChange,
+  handleAdd,
+}) => {
   return (
     <Modal open={open} onClose={handleClose}>
       <Box
         sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
           width: 400,
-          bgcolor: 'background.paper',
+          bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
         }}
@@ -23,7 +29,7 @@ const AddTenantModal = ({ open, handleClose, newData, handleChange, handleAdd })
           label="Name"
           margin="normal"
           name="name"
-          value={newData}
+          value={newData.name}
           onChange={handleChange}
         />
         <TextField
@@ -31,7 +37,16 @@ const AddTenantModal = ({ open, handleClose, newData, handleChange, handleAdd })
           label="Email"
           margin="normal"
           name="email"
-          value={newData}
+          value={newData.email}
+          onChange={handleChange}
+        />
+        <TextField
+          fullWidth
+          label="Password"
+          name="password"
+          margin="normal"
+          type={"password"}
+          value={newData.password}
           onChange={handleChange}
         />
         <TextField
@@ -39,7 +54,7 @@ const AddTenantModal = ({ open, handleClose, newData, handleChange, handleAdd })
           label="Domain"
           margin="normal"
           name="domain"
-          value={newData}
+          value={newData.domain}
           onChange={handleChange}
         />
         <Button

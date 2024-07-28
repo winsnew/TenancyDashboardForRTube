@@ -1,13 +1,12 @@
-// next.config.js
-// module.exports = {
-//     async redirects() {
-//       return [
-//         {
-//           source: '/',
-//           destination: '/',
-//           permanent: false,
-//         },
-//       ];
-//     },
-//   };
+module.exports = {
+    async redirects() {
+      return [
+        {
+          source: '/',
+          destination: '/login',
+          permanent: false,
+        },
+      ];
+    },
+  };
   

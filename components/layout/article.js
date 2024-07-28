@@ -1,7 +1,10 @@
+import NavLanding from "../navLanding"
+
 const LandingLayout = ({children}) => {
     return (
         <>
-        {children}
+            <NavLanding/>
+            {children}
         </>
     )
 }

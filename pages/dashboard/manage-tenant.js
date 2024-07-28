@@ -1,10 +1,7 @@
 import {
   Box,
   Button,
-  Typography,
-  Container,
   useTheme,
-  Toolbar,
 } from "@mui/material";
 import Header from "../../components/header";
 import axios from "../../lib/axios";
@@ -19,8 +16,8 @@ const Tenant = () => {
   const columns = [
     { field: "id", headerName: "Name", width: 150 },
     { field: "domain", headerName: "Domain", width: 170 },
-    { field: 'database', headerName: 'Database', width: 200 },
-    { field: 'status', headerName: 'Status', width: 200 },
+    { field: 'database', headerName: 'Database', width: 170 },
+    { field: 'status', headerName: 'Status', width: 150 },
     { field: "created_at", headerName: "Created_at", width: 120 },
     {
       field: "action",
@@ -40,7 +37,7 @@ const Tenant = () => {
             variant="contained"
             color="grey"
             size="small"
-            onClick={() => handleEdit(params.id)}
+            onClick={() => handleDeleteOpen(params.id)}
           >
             Delete
           </Button>
@@ -49,25 +46,38 @@ const Tenant = () => {
     },
   ];
   const [rows, setRows] = useState([]);
-  const [selectedData, setSelectedData] = useState([]);
+  const [selectedData, setSelectedData] = useState({});
   const [open, setOpen] = useState(false);
-  const [edit, setEdit] = useState(false)
-  const [formData, setFormData] = useState({
+  const [edit, setEdit] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteTenantId, setDeleteTenantId] = useState(null);
+
+  const [newData, setNewData] = useState({
     name: '',
     email: '',
+    password: '',
     domain: '',
-    status: ''
   });
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const handleOpen = () => setOpen(true);
   const handleEditOpen = (data) => {
-    setFormData(data);
+    setSelectedData(data);
     setEdit(true);
   };
   const handleClose = () => setOpen(false);
-  const handleEditClose = () => setEdit(false);
+  const handleEditClose = () => {
+    setOpen(false);
+    setSelectedData({});
+  };
+  const handleDeleteOpen = (id) => {
+    setDeleteTenantId(id);
+    setDeleteOpen(true);
+  };
+  const handleDeleteClose = () => setDeleteOpen(false);
+
 
   useEffect(() => {
     const fetchTenants = async () => {
@@ -75,6 +85,8 @@ const Tenant = () => {
         const response = await axios.get('/api/tenants');
         const tenantsData = response.data.map(tenant => ({
           id: tenant.id,
+          name: tenant.name,
+          email: tenant.email,
           domain: tenant.domain,
           database: tenant.database,
           status: tenant.status,
@@ -93,27 +105,56 @@ const Tenant = () => {
     fetchTenants();
   }, []);
 
-  const handleChange = (e) => {
-    setNewData({ ...formData, [e.target.name]: e.target.value });
+  const handleChangeAdd = (e) => {
+    setNewData({ ...newData, [e.target.name]: e.target.value });
+  };
+  
+
+  const handleEditChange = (e) => {
+    setSelectedData({ ...selectedData, [e.target.name]: e.target.value });
   };
 
   const handleAdd = async () => {
     try {
-      const response = await axios.post('/api/tenants', formData);
-      setRows([...rows, response.data]);
-      setFormData({ name: "", email: "", domain: "" });
-      handleClose();
+      const response = await axios.post('/api/tenants', newData);
+      setRows([...rows, response.data.tenant]);
+      setNewData({ name: '', email: '', password: '', domain: '' });
+      handleClose()
     } catch (error) {
       console.error("There was an error adding the tenant!", error);
     }
   };
+
+  const handleEdit = async (id) => {
+    try {
+      const response = await axios.put(`/api/tenants/${id}`, {
+        domain: selectedData.domain,
+        status: selectedData.status,
+      });
+      setRows(rows.map(row => (row.id === id ? response.data.tenant : row)));
+      handleEditClose();
+    } catch (error) {
+      console.error('There was an error updating the tenant!', error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`/api/tenants/${id}`);
+      setRows(rows.filter(row => row.id !== id));
+      handleDeleteClose();
+    } catch (error) {
+      console.error("There was an error deleting the tenant!", error);
+    }
+  };
+
   return (
     <>
       <Box m="20px" display="flex" flexDirection="column">
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
 
-          <Box>
+          <Box sx={{width: "140px"}}>
             <Button
               sx={{
                 backgroundColor: colors.blueAccent[700],
@@ -129,7 +170,7 @@ const Tenant = () => {
           </Box>
         </Box>
 
-        <Box flexGrow={1} display="flex" flexDirection="column" overflow="auto">
+        <Box flexGrow={1} display="flex" flexDirection="column" sx={{width: "auto"}} overflow="auto">
           <Box flexGrow={1}>
             <DataGrid
               rows={rows}
@@ -144,14 +185,22 @@ const Tenant = () => {
       <AddModal
         open={open}
         handleClose={handleClose}
-        formData={formData}
-        handleChange={handleChange}
+        newData={newData}
+        handleChange={handleChangeAdd}
         handleAdd={handleAdd}
       />
       <EditModal
       open={edit}
       handleClose={handleEditClose}
-      formData={formData}
+      formData={selectedData}
+      handleEditChange={handleEditChange}
+      handleEdit={handleEdit}
+      />
+      <DeleteModal
+      open={deleteOpen}
+      handleClose={handleDeleteClose}
+      handleDelete={handleDelete}
+      tenantId={deleteTenantId}
       />
     </>
   );

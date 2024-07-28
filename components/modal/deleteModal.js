@@ -1,6 +1,6 @@
-import { Box, Typography, Modal } from "@mui/material";
+import { Box, Typography, Modal,Button } from "@mui/material";
 
-const DeleteModal = ({ open, handleClose, handleDelete }) => {
+const DeleteModal = ({ open, handleClose, handleDelete,tenantId }) => {
   return (
     <Modal
       open={open}
@@ -28,6 +28,21 @@ const DeleteModal = ({ open, handleClose, handleDelete }) => {
         >
           Confirm Delete
         </Typography>
+        <Typography id="delete-modal-description" sx={{ mb: 3 }}>
+          Are you sure you want to delete this tenant?
+        </Typography>
+        <Box display="flex" justifyContent="space-between">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => handleDelete(tenantId)}
+          >
+            Delete
+          </Button>
+          <Button variant="contained" onClick={handleClose}>
+            Cancel
+          </Button>
+        </Box>
       </Box>
     </Modal>
   );

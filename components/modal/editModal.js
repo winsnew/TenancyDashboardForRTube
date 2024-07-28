@@ -1,10 +1,10 @@
-import { Modal, Box, Button, Typography, TextField } from "@mui/material";
+import { Modal, Box, Button, Typography, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 
 const EditModal = ({
   open,
   handleClose,
   formData,
-  handleChange,
+  handleEditChange,
   handleEdit,
 }) => {
   return (
@@ -15,44 +15,42 @@ const EditModal = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 400,
+          width: { xs: '90%', sm: 400 }, // Responsive width
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
+          borderRadius: 2,
         }}
       >
-        <Typography variant="h6" component="h2">
+        <Typography variant="h6" component="h2" gutterBottom>
           Edit Tenant
         </Typography>
         <TextField
           fullWidth
-          label="Name"
+          label="Domain"
           margin="normal"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-        />
-        <TextField
-          fullWidth
-          label="Email"
-          margin="normal"
-          name="email"
+          name="domain"
           value={formData.domain}
-          onChange={handleChange}
+          onChange={handleEditChange}
         />
-        <TextField
-          fullWidth
-          label="Status"
-          margin="normal"
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-        />
+        <FormControl fullWidth margin="normal">
+          <InputLabel sx={{color: 'whitesmoke'}}>Status</InputLabel>
+          <Select
+            name="status"
+            value={formData.status}
+            onChange={handleEditChange}
+            label="Status"
+          >
+            <MenuItem value="pending">Pending</MenuItem>
+            <MenuItem value="active">Active</MenuItem>
+          </Select>
+        </FormControl>
         <Button
           sx={{ mt: 2 }}
           variant="contained"
           color="primary"
-          onClick={handleEdit}
+          fullWidth
+          onClick={() => handleEdit(formData.id)}
         >
           Save
         </Button>
@@ -61,4 +59,4 @@ const EditModal = ({
   );
 };
 
-export default EditModal
+export default EditModal;
