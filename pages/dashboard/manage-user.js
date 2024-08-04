@@ -30,16 +30,16 @@ const columns = [
           size="small"
           onClick={() => handleEdit(params.id)}
         >
-          Edit
+          Show Detail
         </Button>
-        <Button
+        {/* <Button
           variant="contained"
           color="grey"
           size="small"
           onClick={() => handleEdit(params.id)}
         >
           Delete
-        </Button>
+        </Button> */}
       </strong>
     ),
   },
@@ -50,25 +50,34 @@ const ManageUser = () => {
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  useEffect(() => {    
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/tenantUsers");
+        const tenantsUser = response.data.map(tenantuser => ({
+          id: tenantuser.id,
+          name: tenantuser.name,
+          email: tenantuser.email,
+          domain: tenantuser.domain,
+          created_at: new Date(tenantuser.created_at).toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          }),
+        }));
+        setRows(tenantsUser);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <Box m="20px" display="flex" flexDirection="column">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
-
-        <Box>
-          <Button
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-            }}
-            // onClick={handleOpen}
-          >
-            Add Tenants
-          </Button>
-        </Box>
       </Box>
 
       <Box flexGrow={1} display="flex" flexDirection="column" overflow="auto">
@@ -80,16 +89,6 @@ const ManageUser = () => {
             sx={{ backgroundColor: colors.primary[400] }}
             rowsPerPageOptions={[5]}
           />
-          {/* <Toolbar>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleDeleteSelected}
-                disabled={selectedData.length === 0}
-              >
-                Delete Selected
-              </Button>
-            </Toolbar> */}
         </Box>
       </Box>
     </Box>

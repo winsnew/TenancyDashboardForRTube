@@ -1,7 +1,10 @@
 import { useTheme } from "@mui/material";
-import { ResponsiveBar } from "@nivo/bar";
+import dynamic from 'next/dynamic'; // dynamically import ResponsiveBar
 import { tokens } from "../styles/theme";
 import { mockBarData as data } from "./data/mock";
+
+// Dynamic import for ResponsiveBar to ensure compatibility with ES modules
+const ResponsiveBar = dynamic(() => import('@nivo/bar').then((mod) => mod.ResponsiveBar), { ssr: false });
 
 const BarChart = ({ isDashboard = false }) => {
   const theme = useTheme();
@@ -11,7 +14,6 @@ const BarChart = ({ isDashboard = false }) => {
     <ResponsiveBar
       data={data}
       theme={{
-        // added
         axis: {
           domain: {
             line: {
@@ -76,7 +78,7 @@ const BarChart = ({ isDashboard = false }) => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "country", // changed
+        legend: isDashboard ? undefined : "country",
         legendPosition: "middle",
         legendOffset: 32,
       }}
@@ -84,7 +86,7 @@ const BarChart = ({ isDashboard = false }) => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "food", // changed
+        legend: isDashboard ? undefined : "food",
         legendPosition: "middle",
         legendOffset: -40,
       }}
