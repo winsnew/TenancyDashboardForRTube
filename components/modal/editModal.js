@@ -30,14 +30,14 @@ const EditModal = ({
           label="Domain"
           margin="normal"
           name="domain"
-          value={formData.domain}
+          value={formData.domain || ''}
           onChange={handleEditChange}
         />
         <FormControl fullWidth margin="normal">
           <InputLabel sx={{color: 'whitesmoke'}}>Status</InputLabel>
           <Select
             name="status"
-            value={formData.status}
+            value={formData.status || ''}
             onChange={handleEditChange}
             label="Status"
           >

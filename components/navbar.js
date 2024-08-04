@@ -31,7 +31,7 @@ const Navbar = () => {
     try {
       const response = await axios.post('/api/logout')
       if(response.status === 200) {
-        router.push('login')
+        router.push('/login')
       }
     } catch (error) {
       console.log('Error Log out : ', error )

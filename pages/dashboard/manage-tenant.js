@@ -14,7 +14,7 @@ import DeleteModal from "../../components/modal/deleteModal";
 
 const Tenant = () => {
   const columns = [
-    { field: "id", headerName: "Name", width: 150 },
+    { field: "id", headerName: "Tenant_idName", width: 150 },
     { field: "domain", headerName: "Domain", width: 170 },
     { field: 'database', headerName: 'Database', width: 170 },
     { field: 'status', headerName: 'Status', width: 150 },
@@ -46,7 +46,7 @@ const Tenant = () => {
     },
   ];
   const [rows, setRows] = useState([]);
-  const [selectedData, setSelectedData] = useState({});
+  const [selectedData, setSelectedData] = useState({ domain: '', status: '' });
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -82,6 +82,7 @@ const Tenant = () => {
   useEffect(() => {
     const fetchTenants = async () => {
       try {
+        const token = localStorage.getItem('auth_token');
         const response = await axios.get('/api/tenants');
         const tenantsData = response.data.map(tenant => ({
           id: tenant.id,
@@ -98,7 +99,12 @@ const Tenant = () => {
         }));
         setRows(tenantsData);
       } catch (error) {
-        console.error("There was an error fetching the tenants!", error);
+        if (error.response && error.response.status === 401) {
+          console.error("Unauthorized: Please log in again.");
+          // Optionally redirect to login page or handle re-authentication
+        } else {
+          console.error("There was an error fetching the tenants!", error);
+        }
       }
     };
 
@@ -120,6 +126,7 @@ const Tenant = () => {
       setRows([...rows, response.data.tenant]);
       setNewData({ name: '', email: '', password: '', domain: '' });
       handleClose()
+      window.location.reload();
     } catch (error) {
       console.error("There was an error adding the tenant!", error);
     }
@@ -133,6 +140,7 @@ const Tenant = () => {
       });
       setRows(rows.map(row => (row.id === id ? response.data.tenant : row)));
       handleEditClose();
+      window.location.reload();
     } catch (error) {
       console.error('There was an error updating the tenant!', error);
     }
@@ -143,8 +151,10 @@ const Tenant = () => {
       await axios.delete(`/api/tenants/${id}`);
       setRows(rows.filter(row => row.id !== id));
       handleDeleteClose();
+      
     } catch (error) {
       console.error("There was an error deleting the tenant!", error);
+      window.location.reload();
     }
   };
 
